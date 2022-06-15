@@ -27,7 +27,11 @@ func (t *ClientMapStruct) Store(conn *websocket.Conn) {
 
 //向所有客户端 发送消息--发送deployment列表
 func (t *ClientMapStruct) SendAll(v interface{}) {
+
 	t.data.Range(func(key, value interface{}) bool {
+		var mu sync.Mutex
+		mu.Lock()
+		defer mu.Unlock()
 		c := value.(*WsClient).conn
 		err := c.WriteJSON(v)
 		if err != nil {
