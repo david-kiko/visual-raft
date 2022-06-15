@@ -24,25 +24,17 @@
             console.log("接到ping消息: ", evt.data)
             return
         }
-        console.log("接到ws消息: ", evt.data)
-
+        const data = JSON.parse(evt.data);
+        console.log("接到ws消息: ", data)
+        if (data.event === "update") {
+            update_state(data.msg);
+        }
+        if (data.event === "heartbeat") {
+            update_state(data.msg, false);
+            heartbeat(data.msg);
+        }
     }
 
-    // let socket = io('/raft-monitor');
-    // socket.on('connect', function () {
-    //     socket.emit('client action', {data: 'raft monitor is connected!'});
-    // });
-    //
-    // socket.on('update state', function (msg) {
-    //     update_state(msg);
-    // });
-    //
-    // socket.on('heartbeat', function (msg) {
-    //     console.log('heartbeat: ' + msg);
-    //     let leader = JSON.parse(msg);
-    //     update_state(msg, false);
-    //     heartbeat(leader);
-    // });
 
     function reset_timer(node_g) {
         node_g.select(`.node_timer`).attr({"stroke-dashoffset": 315})
@@ -50,20 +42,19 @@
     }
 
     function update_state(msg, update_timer = true) {
-        console.log('update state: ' + msg);
-        let data = JSON.parse(msg);
-        let node_g = snap.select(`#S${data.id}`);
-        node_g.select(`circle`).attr({class: data.state});
-        node_g.select(`.node_term`).attr({text: `${data.term}`});
+
+        let node_g = snap.select(`#S${msg.id}`);
+        node_g.select(`circle`).attr({class: msg.state});
+        node_g.select(`.node_term`).attr({text: `${msg.term}`});
 
         if (update_timer) {
-            Snap.animate(0, data.timeout, function (value) {
-                node_g.select(`.node_timer_count`).attr({text: Math.round(data.timeout - value)});
-            }, data.timeout);
+            Snap.animate(0, msg.timeout, function (value) {
+                node_g.select(`.node_timer_count`).attr({text: Math.round(msg.timeout - value)});
+            }, msg.timeout);
             let timer = node_g.select(`.node_timer`);
             reset_timer(node_g);
             timer.animate({"stroke-dashoffset": 0},
-                data.timeout, mina.easeinout, reset_timer.bind(null, node_g));
+                msg.timeout, mina.easeinout, reset_timer.bind(null, node_g));
         }
     }
 
