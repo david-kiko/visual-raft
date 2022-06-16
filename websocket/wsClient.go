@@ -2,6 +2,7 @@ package wsCore
 
 import (
 	"github.com/gorilla/websocket"
+	"sync"
 	"time"
 )
 
@@ -9,10 +10,15 @@ type WsClient struct {
 	conn      *websocket.Conn
 	readChan  chan *WsMessage //读队列 (chan)
 	closeChan chan byte       // 失败队列
+	Mux       sync.RWMutex
 }
 
 func NewWsClient(conn *websocket.Conn) *WsClient {
-	return &WsClient{conn: conn, readChan: make(chan *WsMessage), closeChan: make(chan byte)}
+	return &WsClient{
+		conn:      conn,
+		readChan:  make(chan *WsMessage),
+		closeChan: make(chan byte),
+	}
 }
 func (t *WsClient) Ping(wait time.Duration) {
 	for {
