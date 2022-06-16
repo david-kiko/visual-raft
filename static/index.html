@@ -25,7 +25,6 @@
             return
         }
         const data = JSON.parse(evt.data);
-        console.log("接到ws消息: ", data)
         if (data.event === "update") {
             update_state(data.msg);
         }
@@ -106,7 +105,7 @@
             let dot = snap.select(`#dot-${leader.id}-${j}`);
             dot.animate(
                 {cx: points[j][0], cy: points[j][1]},
-                leader.timeout,
+                300,//动画速度,毫秒
                 mina.linear,
                 reset_dot.bind(null, dot, {cx: points[leader.id][0], cy: points[leader.id][1]})
             );
