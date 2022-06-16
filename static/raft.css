@@ -27,21 +27,21 @@
 }
 
 .follower {
-    fill: palevioletred;
+    fill: lightskyblue;
     stroke: #b5580d;
     stroke-width: 8;
     opacity: 0.8
 }
 
 .candidate {
-    fill: darkolivegreen;
+    fill: darkslategrey;
     stroke: #b5580d;
     stroke-width: 8;
     opacity: 0.8
 }
 
 .leader {
-    fill: rebeccapurple;
+    fill: green;
     stroke: #b5580d;
     stroke-width: 8;
     opacity: 0.8

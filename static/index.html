@@ -42,9 +42,31 @@
 
     function update_state(msg, update_timer = true) {
 
+        // const info = `角色: ${msg.state}` + "\r\n" + `投票给了${msg.voted_for}`
+
+
         let node_g = snap.select(`#S${msg.id}`);
         node_g.select(`circle`).attr({class: msg.state});
         node_g.select(`.node_term`).attr({text: `${msg.term}`});
+        //文字信息位置
+        let loc = -230
+        if (msg.id === 2 || msg.id === 4) {
+            loc = 130
+        }
+        node_g.select(`.info`).attr({
+            text: [
+                `角色: ${msg.state}`,
+                `投票: ${msg.voted_for}`,
+                `选票数: ${msg.voteCount}`,
+                `被提交的最大索引: ${msg.commitIndex}`,
+                `被应用到状态机的最大索引: ${msg.lastApplied}`,
+                `需发给每个节点的下一索引: ${msg.nextIndex}`,
+                `已复制给每个节点的最高索引 ${msg.matchIndex}`,
+
+            ]
+        }).selectAll("tspan").forEach(function (tspan, i) {
+            tspan.attr({x: loc, y: 25 * (i + 1)});
+        });
 
         if (update_timer) {
             Snap.animate(0, msg.timeout, function (value) {
@@ -73,6 +95,7 @@
         node_g.text(40, 65, "1").addClass("node_term");
         node_g.text(20, 95, "").addClass("node_timer_count");
         node_g.text(35, 122, node).addClass("node_name");
+        node_g.text(12, -50, "").addClass("info");
         node_g.path("M 50, 30 a 50,50 0 1,1 0,100 a 50,50 0 1,1 0,-100").addClass("node_timer");
     }
 
