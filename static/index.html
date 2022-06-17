@@ -53,18 +53,18 @@
         if (msg.id === 2 || msg.id === 4) {
             loc = 130
         }
-        node_g.select(`.info`).attr({
-            text: [
-                `角色: ${msg.state}`,
-                `投票: ${msg.voted_for}`,
-                `选票数: ${msg.voteCount}`,
-                `被提交的最大索引: ${msg.commitIndex}`,
-                `被应用到状态机的最大索引: ${msg.lastApplied}`,
-                `需发给每个节点的下一索引: ${msg.nextIndex}`,
-                `已复制给每个节点的最高索引 ${msg.matchIndex}`,
-
-            ]
-        }).selectAll("tspan").forEach(function (tspan, i) {
+        const info = [
+            `角色: ${msg.state}`,
+            `投票: ${msg.voted_for}`,
+            `选票数: ${msg.voteCount}`,
+            `被提交的最大索引: ${msg.commitIndex}`,
+        ]
+        if (msg.state === "leader") {
+            info.push(`被应用到状态机的最大索引: ${msg.lastApplied}`)
+            info.push(`需发给每个节点的下一索引: ${msg.nextIndex}`)
+            info.push(`已复制给每个节点的最高索引 ${msg.matchIndex}`)
+        }
+        node_g.select(`.info`).attr({text: info}).selectAll("tspan").forEach(function (tspan, i) {
             tspan.attr({x: loc, y: 25 * (i + 1)});
         });
 
